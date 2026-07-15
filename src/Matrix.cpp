@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <cmath>
 
+// Fills matrix with uniform random values [-0.1, 0.1]
 void Matrix::randomize() {
     static std::random_device rd;
     static std::mt19937 gen(rd());
@@ -11,21 +12,23 @@ void Matrix::randomize() {
     for (auto& val : data) val = dis(gen);
 }
 
-// YENI: Xavier init
+// Xavier Initialization: Keeps variance stable across deep layers
 void Matrix::randomizeXavier(size_t fanIn, size_t fanOut) {
     static std::random_device rd;
     static std::mt19937 gen(rd());
-
+    // Calculate limit based on input and output sizes
     double limit = std::sqrt(6.0 / (double)(fanIn + fanOut));
     std::uniform_real_distribution<> dis(-limit, limit);
 
     for (auto& val : data) val = dis(gen);
 }
 
+// Constructor initializes flat vector with zeros
 Matrix::Matrix(size_t rowSize, size_t colSize) : cols(colSize), rows(rowSize) {
     data.resize(cols * rows, 0);
 }
 
+// Standard Matrix Multiplication (Dot Product)
 Matrix Matrix::multiply(const Matrix& target) const{
     if (cols != target.rows) throw std::invalid_argument("Invalid sizes for multiply!");
     Matrix result(rows, target.cols);
@@ -41,6 +44,7 @@ Matrix Matrix::multiply(const Matrix& target) const{
     return result;
 }
 
+// Transposes the matrix (swaps rows and columns)
 Matrix Matrix::transpose() const{
     Matrix result(cols, rows);
     for(size_t i = 0; i < rows; i++){
@@ -51,6 +55,7 @@ Matrix Matrix::transpose() const{
     return result;
 }
 
+// Applies a given lambda function to every element in the matrix
 Matrix Matrix::map(std::function<double(double)> func) const{
     Matrix result(rows, cols);
     for(size_t i = 0; i < data.size(); i++){
@@ -59,6 +64,7 @@ Matrix Matrix::map(std::function<double(double)> func) const{
     return result;
 }
 
+// Slices out a smaller matrix from the current matrix
 Matrix Matrix::slice(size_t r_offset, size_t c_offset, size_t rows_to_take, size_t cols_to_take) const{
     if(r_offset + rows_to_take > rows || c_offset + cols_to_take > cols)
         throw std::out_of_range("Out of the range!");
@@ -71,8 +77,9 @@ Matrix Matrix::slice(size_t r_offset, size_t c_offset, size_t rows_to_take, size
     return result;
 }
 
+// Concatenates two matrices either horizontally (axis=1) or vertically (axis=0)
 Matrix Matrix::concatenate(const Matrix& A, const Matrix& B, int axis){
-    if(axis == 1){
+    if(axis == 1){ // Horizontal merge
         if(A.rows != B.rows) throw std::invalid_argument("Row size is not same!");
         Matrix result(A.rows, A.cols + B.cols);
         for(size_t i = 0; i < A.rows; i++){
@@ -82,7 +89,7 @@ Matrix Matrix::concatenate(const Matrix& A, const Matrix& B, int axis){
                 result.at(i, A.cols + l) = B.at(i, l);
         }
         return result;
-    } else if (axis == 0){
+    } else if (axis == 0){ // Vertical merge
         if(A.cols != B.cols) throw std::invalid_argument("Column size is not same!");
         Matrix result(A.rows + B.rows, A.cols);
         for(size_t i = 0; i < A.cols; i++){
@@ -96,6 +103,7 @@ Matrix Matrix::concatenate(const Matrix& A, const Matrix& B, int axis){
     throw std::invalid_argument("Invalid axis for concatenate!");
 }
 
+// Element-wise addition
 Matrix Matrix::add(const Matrix& matrix) const {
     if (cols != matrix.cols || rows != matrix.rows)
         throw std::invalid_argument("Not same size to add!");
@@ -106,6 +114,7 @@ Matrix Matrix::add(const Matrix& matrix) const {
     return result;
 }
 
+// Prints the matrix for debugging
 void Matrix::print() const {
     for (size_t i = 0; i < rows; i++) {
         for (size_t j = 0; j < cols; j++) {
@@ -116,9 +125,11 @@ void Matrix::print() const {
     std::cout << "\n";
 }
 
+// Returns a reference to the element at (r, c)
 double& Matrix::at(size_t r, size_t c){
     return data[r * cols + c];
 }
+// Returns a const reference to the element at (r, c)
 const double& Matrix::at(size_t r, size_t c) const{
     return data[r * cols + c];
 }
