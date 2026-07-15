@@ -36,10 +36,10 @@ Instead of being limited to basic sequential models, **DAG-NN-CPP** implements a
 └── README.md
 ```
 
-🏗️ Computational Graph Architecture
+## 🏗️ Computational Graph Architecture
 The default topology defined in main.cpp demonstrates the flexibility of the DAG model:
 
-```Plaintext
+```text
        [ Input (1) ]
              │
       [ Hidden_1 (3) ]
@@ -57,21 +57,21 @@ The default topology defined in main.cpp demonstrates the flexibility of the DAG
         [Output (1)]           <-- Output Layer (Sigmoid)
 ```
 
-💻 Getting Started
-Prerequisites
+## 💻 Getting Started
+### Prerequisites
 A C++ compiler supporting C++17 or higher (e.g., g++ or clang++).
 
-Compilation
+### Compilation
 Run the following command from the root directory:
 
-```Bash
+```bash
 g++ -std=c++17 -Iinclude src/main.cpp src/Matrix.cpp src/readCSV.cpp -o DagNN
 ```
-Running the Project
-```Bash
+### Running the Project
+```bash
 ./DagNN
 ```
 The network will automatically train on a generated non-linear dataset for 10,000 epochs, displaying real-time loss reduction. Once trained, you can interactively input numbers and get predictions.
 
-📄 License
+### 📄 License
 This project is licensed under the MIT License - see the LICENSE file for details.
