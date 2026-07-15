@@ -1,13 +1,15 @@
-#include <readCSV.hpp>
-DataSet::DataSet(const char *fileName){
+#include "readCSV.hpp"
+
+// Opens the file.
+DataSet::DataSet(const char* fileName) {
     file = fileName;
     std::ifstream inputFile;
     inputFile.open(file);
     std::string fullLine;
     getline(inputFile, fullLine);
     std::string flood = "";
-    for (int i = 0; i < (int)(fullLine.length()); i++){
-        if(fullLine[i] != ','){
+    for (int i = 0; i < (int)(fullLine.length()); i++) {
+        if (fullLine[i] != ',') {
             flood = flood + fullLine[i];
         }
         else {
@@ -22,8 +24,8 @@ DataSet::DataSet(const char *fileName){
     inputFile.close();
     std::cout << values.size() << " category detected!" << std::endl;
 }
-
-void DataSet::readCSV(){
+// Reads the file.
+void DataSet::readCSV() {
     std::ifstream inputFile;
     inputFile.open(file);
     std::string tmp;
@@ -32,22 +34,22 @@ void DataSet::readCSV(){
     int rows = 1;
     std::vector<std::string> categories;
     getline(inputFile, tmp);
-    for (int i = 0; i < tmp.length(); i++){
-        if(tmp[i] != ',') tmpValue = tmpValue + tmp[i];
-        else{
+    for (int i = 0; i < tmp.length(); i++) {
+        if (tmp[i] != ',') tmpValue = tmpValue + tmp[i];
+        else {
             categories.push_back(tmpValue);
             tmpValue = "";
         }
     }
     categories.push_back(tmpValue);
     tmpValue = "";
-    while(getline(inputFile, tmp)){
+    while (getline(inputFile, tmp)) {
         bool isThere = false;
         bool doLastThing = true;
-        for(int i = 0; i < tmp.length(); i++){
-            if(isThere == true){
-                if(tmp[i] != '"') tmpValue = tmpValue + tmp[i];
-                else{
+        for (int i = 0; i < tmp.length(); i++) {
+            if (isThere == true) {
+                if (tmp[i] != '"') tmpValue = tmpValue + tmp[i];
+                else {
                     values[categories.at(categoryInd)][rows] = tmpValue;
                     categoryInd++;
                     tmpValue = "";
@@ -56,13 +58,13 @@ void DataSet::readCSV(){
                     i++;
                 }
             }
-            else{
-                if(tmp[i] != ','){
-                    if(tmp[i] == '"'){ isThere = true; continue; }
+            else {
+                if (tmp[i] != ',') {
+                    if (tmp[i] == '"') { isThere = true; continue; }
                     tmpValue = tmpValue + tmp[i];
                     doLastThing = true;
                 }
-                else{
+                else {
                     values[categories.at(categoryInd)][rows] = tmpValue;
                     categoryInd++;
                     doLastThing = false;
@@ -70,15 +72,15 @@ void DataSet::readCSV(){
                 }
             }
         }
-        if(doLastThing) values[categories.at(categoryInd)][rows] = tmpValue;
+        if (doLastThing) values[categories.at(categoryInd)][rows] = tmpValue;
         categoryInd = 0;
         tmpValue = "";
         rows++;
     }
     inputFile.close();
 }
-
-void DataSet::readCSVinRange(int begin, int end){
+// Reads a specific range of rows.
+void DataSet::readCSVinRange(int begin, int end) {
     std::ifstream inputFile;
     inputFile.open(file);
     std::string tmp;
@@ -87,23 +89,23 @@ void DataSet::readCSVinRange(int begin, int end){
     int rows = 1;
     std::vector<std::string> categories;
     getline(inputFile, tmp);
-    for (int i = 0; i < tmp.length(); i++){
-        if(tmp[i] != ',') tmpValue = tmpValue + tmp[i];
-        else{
+    for (int i = 0; i < tmp.length(); i++) {
+        if (tmp[i] != ',') tmpValue = tmpValue + tmp[i];
+        else {
             categories.push_back(tmpValue);
             tmpValue = "";
         }
     }
     categories.push_back(tmpValue);
     tmpValue = "";
-    while(getline(inputFile, tmp)){
+    while (getline(inputFile, tmp)) {
         bool isThere = false;
         bool doLastThing = true;
-        if(rows <= end && rows >= begin){
-            for(int i = 0; i < tmp.length(); i++){
-                if(isThere == true){
-                    if(tmp[i] != '"') tmpValue = tmpValue + tmp[i];
-                    else{
+        if (rows <= end && rows >= begin) {
+            for (int i = 0; i < tmp.length(); i++) {
+                if (isThere == true) {
+                    if (tmp[i] != '"') tmpValue = tmpValue + tmp[i];
+                    else {
                         values[categories.at(categoryInd)][rows] = tmpValue;
                         categoryInd++;
                         tmpValue = "";
@@ -112,13 +114,13 @@ void DataSet::readCSVinRange(int begin, int end){
                         i++;
                     }
                 }
-                else{
-                    if(tmp[i] != ','){
-                        if(tmp[i] == '"'){ isThere = true; continue; }
+                else {
+                    if (tmp[i] != ',') {
+                        if (tmp[i] == '"') { isThere = true; continue; }
                         tmpValue = tmpValue + tmp[i];
                         doLastThing = true;
                     }
-                    else{
+                    else {
                         values[categories.at(categoryInd)][rows] = tmpValue;
                         categoryInd++;
                         doLastThing = false;
@@ -126,7 +128,7 @@ void DataSet::readCSVinRange(int begin, int end){
                     }
                 }
             }
-            if(doLastThing) values[categories.at(categoryInd)][rows] = tmpValue;
+            if (doLastThing) values[categories.at(categoryInd)][rows] = tmpValue;
             categoryInd = 0;
             tmpValue = "";
         }
@@ -134,8 +136,8 @@ void DataSet::readCSVinRange(int begin, int end){
     }
     inputFile.close();
 }
-
-void DataSet::readCSVRow(int row){
+// Reads a single row.
+void DataSet::readCSVRow(int row) {
     std::ifstream inputFile;
     inputFile.open(file);
     std::string tmp;
@@ -144,23 +146,23 @@ void DataSet::readCSVRow(int row){
     int rows = 1;
     std::vector<std::string> categories;
     getline(inputFile, tmp);
-    for (int i = 0; i < tmp.length(); i++){
-        if(tmp[i] != ',') tmpValue = tmpValue + tmp[i];
-        else{
+    for (int i = 0; i < tmp.length(); i++) {
+        if (tmp[i] != ',') tmpValue = tmpValue + tmp[i];
+        else {
             categories.push_back(tmpValue);
             tmpValue = "";
         }
     }
     categories.push_back(tmpValue);
     tmpValue = "";
-    while(getline(inputFile, tmp)){
+    while (getline(inputFile, tmp)) {
         bool isThere = false;
         bool doLastThing = true;
-        if(rows == row){
-            for(int i = 0; i < tmp.length(); i++){
-                if(isThere == true){
-                    if(tmp[i] != '"') tmpValue = tmpValue + tmp[i];
-                    else{
+        if (rows == row) {
+            for (int i = 0; i < tmp.length(); i++) {
+                if (isThere == true) {
+                    if (tmp[i] != '"') tmpValue = tmpValue + tmp[i];
+                    else {
                         values[categories.at(categoryInd)][rows] = tmpValue;
                         categoryInd++;
                         tmpValue = "";
@@ -169,13 +171,13 @@ void DataSet::readCSVRow(int row){
                         i++;
                     }
                 }
-                else{
-                    if(tmp[i] != ','){
-                        if(tmp[i] == '"'){ isThere = true; continue; }
+                else {
+                    if (tmp[i] != ',') {
+                        if (tmp[i] == '"') { isThere = true; continue; }
                         tmpValue = tmpValue + tmp[i];
                         doLastThing = true;
                     }
-                    else{
+                    else {
                         values[categories.at(categoryInd)][rows] = tmpValue;
                         categoryInd++;
                         doLastThing = false;
@@ -183,7 +185,7 @@ void DataSet::readCSVRow(int row){
                     }
                 }
             }
-            if(doLastThing) values[categories.at(categoryInd)][rows] = tmpValue;
+            if (doLastThing) values[categories.at(categoryInd)][rows] = tmpValue;
             categoryInd = 0;
             tmpValue = "";
             break;
@@ -192,8 +194,8 @@ void DataSet::readCSVRow(int row){
     }
     inputFile.close();
 }
-
-void DataSet::readCSVCategory(std::string category){
+// Reads a single category (column).
+void DataSet::readCSVCategory(std::string category) {
     std::ifstream inputFile;
     inputFile.open(file);
     std::string tmp;
@@ -202,25 +204,25 @@ void DataSet::readCSVCategory(std::string category){
     int rows = 1;
     std::vector<std::string> categories;
     getline(inputFile, tmp);
-    for (int i = 0; i < tmp.length(); i++){
-        if(tmp[i] != ',') tmpValue = tmpValue + tmp[i];
-        else{
+    for (int i = 0; i < tmp.length(); i++) {
+        if (tmp[i] != ',') tmpValue = tmpValue + tmp[i];
+        else {
             categories.push_back(tmpValue);
             tmpValue = "";
         }
     }
     categories.push_back(tmpValue);
     tmpValue = "";
-    while(getline(inputFile, tmp)){
+    while (getline(inputFile, tmp)) {
         bool isThere = false;
         bool doLastThing = true;
-        for(int i = 0; i < tmp.length(); i++){
-            if(categories.at(categoryInd) == category){
-                if(isThere == true){
-                    if(tmp[i] != '"'){
+        for (int i = 0; i < tmp.length(); i++) {
+            if (categories.at(categoryInd) == category) {
+                if (isThere == true) {
+                    if (tmp[i] != '"') {
                         tmpValue = tmpValue + tmp[i];
                     }
-                    else{
+                    else {
                         values[categories.at(categoryInd)][rows] = tmpValue;
                         tmpValue = "";
                         isThere = false;
@@ -228,13 +230,13 @@ void DataSet::readCSVCategory(std::string category){
                         break;
                     }
                 }
-                else{
-                    if(tmp[i] != ','){
-                        if(tmp[i] == '"'){ isThere = true; continue; }
+                else {
+                    if (tmp[i] != ',') {
+                        if (tmp[i] == '"') { isThere = true; continue; }
                         tmpValue = tmpValue + tmp[i];
                         doLastThing = true;
                     }
-                    else{
+                    else {
                         values[categories.at(categoryInd)][rows] = tmpValue;
                         doLastThing = false;
                         tmpValue = "";
@@ -242,16 +244,16 @@ void DataSet::readCSVCategory(std::string category){
                     }
                 }
             }
-            if(tmp[i] == ',' && isThere == false) categoryInd++;
+            if (tmp[i] == ',' && isThere == false) categoryInd++;
         }
-        if(categories.at(categoryInd) == category && doLastThing == true) values[categories.at(categoryInd)][rows] = tmpValue;
+        if (categories.at(categoryInd) == category && doLastThing == true) values[categories.at(categoryInd)][rows] = tmpValue;
         categoryInd = 0;
         tmpValue = "";
     }
     inputFile.close();
 }
-
-void DataSet::readCSVCategoryinRange(std::string category, int begin, int end){
+// Reads a specific range of rows within a category.
+void DataSet::readCSVCategoryinRange(std::string category, int begin, int end) {
     std::ifstream inputFile;
     inputFile.open(file);
     std::string tmp;
@@ -260,26 +262,26 @@ void DataSet::readCSVCategoryinRange(std::string category, int begin, int end){
     int rows = 1;
     std::vector<std::string> categories;
     getline(inputFile, tmp);
-    for (int i = 0; i < tmp.length(); i++){
-        if(tmp[i] != ',') tmpValue = tmpValue + tmp[i];
-        else{
+    for (int i = 0; i < tmp.length(); i++) {
+        if (tmp[i] != ',') tmpValue = tmpValue + tmp[i];
+        else {
             categories.push_back(tmpValue);
             tmpValue = "";
         }
     }
     categories.push_back(tmpValue);
     tmpValue = "";
-    while(getline(inputFile, tmp)){
+    while (getline(inputFile, tmp)) {
         bool isThere = false;
         bool doLastThing = true;
-        if(rows <= end && rows >= begin){
-            for(int i = 0; i < tmp.length(); i++){
-                if(categories.at(categoryInd) == category){
-                    if(isThere == true){
-                        if(tmp[i] != '"'){
+        if (rows <= end && rows >= begin) {
+            for (int i = 0; i < tmp.length(); i++) {
+                if (categories.at(categoryInd) == category) {
+                    if (isThere == true) {
+                        if (tmp[i] != '"') {
                             tmpValue = tmpValue + tmp[i];
                         }
-                        else{
+                        else {
                             values[categories.at(categoryInd)][rows] = tmpValue;
                             tmpValue = "";
                             isThere = false;
@@ -287,13 +289,13 @@ void DataSet::readCSVCategoryinRange(std::string category, int begin, int end){
                             break;
                         }
                     }
-                    else{
-                        if(tmp[i] != ','){
-                            if(tmp[i] == '"'){ isThere = true; continue; }
+                    else {
+                        if (tmp[i] != ',') {
+                            if (tmp[i] == '"') { isThere = true; continue; }
                             tmpValue = tmpValue + tmp[i];
                             doLastThing = true;
                         }
-                        else{
+                        else {
                             values[categories.at(categoryInd)][rows] = tmpValue;
                             doLastThing = false;
                             tmpValue = "";
@@ -301,9 +303,9 @@ void DataSet::readCSVCategoryinRange(std::string category, int begin, int end){
                         }
                     }
                 }
-                if(tmp[i] == ',' && isThere == false) categoryInd++;
+                if (tmp[i] == ',' && isThere == false) categoryInd++;
             }
-            if(categories.at(categoryInd) == category && doLastThing == true) values[categories.at(categoryInd)][rows] = tmpValue;
+            if (categories.at(categoryInd) == category && doLastThing == true) values[categories.at(categoryInd)][rows] = tmpValue;
             categoryInd = 0;
             tmpValue = "";
         }
@@ -311,8 +313,8 @@ void DataSet::readCSVCategoryinRange(std::string category, int begin, int end){
     }
     inputFile.close();
 }
-
-void DataSet::readCSVCategoryinRow(std::string category, int row){
+// Reads a single row within a category.
+void DataSet::readCSVCategoryinRow(std::string category, int row) {
     std::ifstream inputFile;
     inputFile.open(file);
     std::string tmp;
@@ -321,26 +323,26 @@ void DataSet::readCSVCategoryinRow(std::string category, int row){
     int rows = 1;
     std::vector<std::string> categories;
     getline(inputFile, tmp);
-    for (int i = 0; i < tmp.length(); i++){
-        if(tmp[i] != ',') tmpValue = tmpValue + tmp[i];
-        else{
+    for (int i = 0; i < tmp.length(); i++) {
+        if (tmp[i] != ',') tmpValue = tmpValue + tmp[i];
+        else {
             categories.push_back(tmpValue);
             tmpValue = "";
         }
     }
     categories.push_back(tmpValue);
     tmpValue = "";
-    while(getline(inputFile, tmp)){
+    while (getline(inputFile, tmp)) {
         bool isThere = false;
         bool doLastThing = true;
-        if(rows == row){
-            for(int i = 0; i < tmp.length(); i++){
-                if(categories.at(categoryInd) == category){
-                    if(isThere == true){
-                        if(tmp[i] != '"'){
+        if (rows == row) {
+            for (int i = 0; i < tmp.length(); i++) {
+                if (categories.at(categoryInd) == category) {
+                    if (isThere == true) {
+                        if (tmp[i] != '"') {
                             tmpValue = tmpValue + tmp[i];
                         }
-                        else{
+                        else {
                             values[categories.at(categoryInd)][rows] = tmpValue;
                             tmpValue = "";
                             isThere = false;
@@ -348,13 +350,13 @@ void DataSet::readCSVCategoryinRow(std::string category, int row){
                             break;
                         }
                     }
-                    else{
-                        if(tmp[i] != ','){
-                            if(tmp[i] == '"'){ isThere = true; continue; }
+                    else {
+                        if (tmp[i] != ',') {
+                            if (tmp[i] == '"') { isThere = true; continue; }
                             tmpValue = tmpValue + tmp[i];
                             doLastThing = true;
                         }
-                        else{
+                        else {
                             values[categories.at(categoryInd)][rows] = tmpValue;
                             doLastThing = false;
                             tmpValue = "";
@@ -362,9 +364,9 @@ void DataSet::readCSVCategoryinRow(std::string category, int row){
                         }
                     }
                 }
-                if(tmp[i] == ',' && isThere == false) categoryInd++;
+                if (tmp[i] == ',' && isThere == false) categoryInd++;
             }
-            if(categories.at(categoryInd) == category && doLastThing == true) values[categories.at(categoryInd)][rows] = tmpValue;
+            if (categories.at(categoryInd) == category && doLastThing == true) values[categories.at(categoryInd)][rows] = tmpValue;
             categoryInd = 0;
             tmpValue = "";
             break;
@@ -373,43 +375,49 @@ void DataSet::readCSVCategoryinRow(std::string category, int row){
     }
     inputFile.close();
 }
-
-long double DataSet::getValueNum(std::string category, int row){
-    try{
+// Returns a parsed value. (Numeric value.)
+long double DataSet::getValueNum(std::string category, int row) {
+    try {
         return stold(values.at(category).at(row));
-    } catch (const std::invalid_argument& e) {
+    }
+    catch (const std::invalid_argument& e) {
         std::cout << std::endl << "It's a string, not a num => " << "Category: " << category << " Row: " << row << " Value: " << values[category][row] << std::endl;
         std::cout << e.what() << std::endl;
         return 0;
-    } catch (const std::out_of_range& e) {
+    }
+    catch (const std::out_of_range& e) {
         std::cout << std::endl << "Value is out of the range => " << "Category: " << category << " Rows: " << row << " Value: " << values[category][row] << std::endl;
         std::cout << "Problem: " << e.what() << std::endl;
         return 0;
     }
 }
-std::string DataSet::getValueStr(std::string category, int row){
-    try{
+// Returns a parsed value. (String value.)
+std::string DataSet::getValueStr(std::string category, int row) {
+    try {
         return values.at(category).at(row);
-    } catch (const std::out_of_range& e) {
+    }
+    catch (const std::out_of_range& e) {
         std::cout << std::endl << "Value is out of the range => " << "Category: " << category << " Rows: " << row << " Value: " << values[category][row] << std::endl;
         std::cout << "Problem: " << e.what() << std::endl;
         return "RANGE ERROR!";
     }
 }
-std::string DataSet::getCategoryName(int CategoryIndex){
+// Returns the name of the category at the specified index.
+std::string DataSet::getCategoryName(int CategoryIndex) {
     std::ifstream inputFile;
     inputFile.open(file);
     std::string tmp;
     std::string tmpValue = "";
     int CategoryInd = 1;
     getline(inputFile, tmp);
-    for (int i = 0; i < tmp.length(); i++){
-        if(tmp[i] == ','){ CategoryInd++; continue; }
-        if(CategoryInd == CategoryIndex) tmpValue = tmpValue + tmp[i];
+    for (int i = 0; i < tmp.length(); i++) {
+        if (tmp[i] == ',') { CategoryInd++; continue; }
+        if (CategoryInd == CategoryIndex) tmpValue = tmpValue + tmp[i];
     }
     inputFile.close();
     return tmpValue;
 }
-void DataSet::freeMemory(){
+// Clears the memory.
+void DataSet::freeMemory() {
     values.clear();
 }
